@@ -183,7 +183,7 @@
             let evento={
                 id:$('#id').val(),
                 fecha:$('#fecha').val()+' '+$('#hora').val(),
-                descripcion:$('#descripcion').val(),
+                concepto:$('#descripcion').val(),
                 confirmada:$('#confirmada').val(),
                 estado:$('#estado').val(),
                 donde:$('#donde').val(),
