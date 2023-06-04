@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-   
+
 
     <!-- Scipts css -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -39,16 +40,16 @@
                         <span aria-hidden="true">x</span>
                     </button>
                 </div>
-            
+
                 <div class="modal-body">
                     <input type="hidden" id="id">
 
-                    <div class="form-row">
+                    <!-- <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="">Evento</label>
                             <input type="text" name="" id="Titulo" class="form-control" value="" placeholder="">
                         </div>
-                    </div>
+                    </div> -->
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="">Fecha:</label>
@@ -111,7 +112,6 @@
         </div>
     </div>
     <script>
-
         $('.clockpicker').clockpicker();
 
         let calendario1 = new FullCalendar.Calendar(document.getElementById('Calendario1'), {
@@ -119,52 +119,112 @@
             dateClick: function(info) {
 
                 limpiarFormulario()
-                $("#FormularioEventos").modal('show');
+
                 $('#botonAgregar').show();
                 $('#botonModificar').hide();
                 $('#botonBorrar').hide();
                 $('#botonAgregar').show();
 
-                if(info.allDay){
+                if (info.allDay) {
                     $('#fecha').val(info.dateStr);
-                    
-                }else{
-                    let fechaHora=info.dateStr.split("T");
+
+                } else {
+                    let fechaHora = info.dateStr.split("T");
                     $('#fecha').val(fechaHora[0]);
-                    $('#fecha').val(fechaHora[1].substring(0,5));
+                    $('#fecha').val(fechaHora[1].substring(0, 5));
                 }
+                $("#FormularioEventos").modal('show');
+            },
+            eventClick: function(info) {
+                $('#botonAgregar').hide();
+                $('#botonModificar').show();
+                $('#botonBorrar').show();
+
+                $('#id').val(info.event.id);
+                $('#descripcion').val(info.event.title);
+                $('#fecha').val(moment(info.event.start).format("YYYY-MM-DD"));
+                $('#hora').val(moment(info.event.start).format("HH:mm"));
+                $('#confirmada').val(info.event.extendedProps.confirmada);
+                $('#estado').val(info.event.extendedProps.estado);
+                $('#donde').val(info.event.extendedProps.donde);
+                $('#contacto').val(info.event.extendedProps.contacto);
+                $('#nombre').val(info.event.extendedProps.nombre);
+                $('#telefono').val(info.event.extendedProps.telefono);
+                $('#colorfondo').val(info.event.backgroundColor);
+                $('#colortexto').val(info.event.textColor);
+
+                $("#FormularioEventos").modal('show');
             }
         });
         calendario1.render();
 
         //Eventos de botones
 
-        $('#botonAgregar').click(function(){
-            let evento=recuperarDatosForm();
+        $('#botonAgregar').click(function() {
+            let evento = recuperarDatosForm();
             agregarEvento(evento);
             $('#FormularioEventos').modal('hide');
         });
 
+        $('#botonModificar').click(function() {
+            let evento = recuperarDatosForm();
+            modificarEvento(evento);
+            $('#FormularioEventos').modal('hide');
+        });
+
+        $('#botonBorrar').click(function() {
+            let evento = recuperarDatosForm();
+            borrarEvento(evento);
+            $('#FormularioEventos').modal('hide');
+        });
 
         //Funciones AJAX
 
-        function agregarEvento(evento){
+        function agregarEvento(evento) {
             $.ajax({
-                type:'POST',
-                url:'eventos.php?accion=agregar',
+                type: 'POST',
+                url: 'eventos.php?accion=agregar',
                 data: evento,
-                success:function(msg){
+                success: function(msg) {
                     calendario1.refetchEvents();
                 },
-                error: function(error){
-                   alert($('#fecha').val()+' '+$('#hora').val(),);
+                error: function(error) {
+                    alert("Error al agregar el evento: "+error);
+                }
+            })
+        }
+
+        function modificarEvento(evento){
+            $.ajax({
+                type: 'POST',
+                url: 'eventos.php?accion=modificar',
+                data: evento,
+                success: function(msg) {
+                    calendario1.refetchEvents();
+                },
+                error: function(error) {
+                    alert("Error al modificar el evento: "+error);
+                }
+            })
+        }
+
+        function borrarEvento(evento){
+            $.ajax({
+                type: 'POST',
+                url: 'eventos.php?accion=borrar',
+                data: evento,
+                success: function(msg) {
+                    calendario1.refetchEvents();
+                },
+                error: function(error) {
+                    alert("Error al borrar el evento: "+error);
                 }
             })
         }
 
         //funciones que interactuan con el formulario eventos
 
-        function limpiarFormulario(){
+        function limpiarFormulario() {
             $('#id').val('');
             $('#fecha').val('');
             $('#hora').val('');
@@ -179,19 +239,19 @@
             $('#colortexto').val('#ffffff');
         }
 
-        function recuperarDatosForm(){
-            let evento={
-                id:$('#id').val(),
-                fecha:$('#fecha').val()+' '+$('#hora').val(),
-                concepto:$('#descripcion').val(),
-                confirmada:$('#confirmada').val(),
-                estado:$('#estado').val(),
-                donde:$('#donde').val(),
-                contacto:$('#contacto').val(),
-                nombre:$('#nombre').val(),
-                telefono:$('#telefono').val(),
-                colorfondo:$('#colorfondo').val(),
-                colortexto:$('#colortexto').val()
+        function recuperarDatosForm() {
+            let evento = {
+                id: $('#id').val(),
+                fecha: $('#fecha').val() + ' ' + $('#hora').val(),
+                concepto: $('#descripcion').val(),
+                confirmada: $('#confirmada').val(),
+                estado: $('#estado').val(),
+                donde: $('#donde').val(),
+                contacto: $('#contacto').val(),
+                nombre: $('#nombre').val(),
+                telefono: $('#telefono').val(),
+                colorfondo: $('#colorfondo').val(),
+                colortexto: $('#colortexto').val()
             }
             return evento;
         }

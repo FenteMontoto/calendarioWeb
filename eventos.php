@@ -13,10 +13,11 @@ switch($_GET['accion']){
         confirmada,
         estado,
         donde,
+        contacto,
         nombre,
         telefono,
         colortexto as textColor,
-        colorfondo as backgroundColor from avisos";
+        colorfondo as backgroundColor from avisos order by id desc";
         $datos=mysqli_query($conexion,$listar);
         $resultado=mysqli_fetch_all($datos, MYSQLI_ASSOC);
         echo json_encode($resultado);
@@ -30,8 +31,8 @@ switch($_GET['accion']){
         echo json_encode($respuesta);
         break;
     case 'modificar':
-        "UPDATE avisos set fecha='$_POST[fecha]',
-                           concepto='$_POST[concepto]',
+        $modificar="UPDATE avisos set fecha='$_POST[fecha]',
+                            concepto='$_POST[concepto]',
                             confirmada='$_POST[confirmada]',
                             estado='$_POST[estado]',
                             donde='$_POST[donde]',
@@ -40,10 +41,14 @@ switch($_GET['accion']){
                             telefono='$_POST[telefono]',
                             colortexto='$_POST[colortexto]',
                             colorfondo='$_POST[colorfondo]'
-                            where id='$_POST[id]'";
+                            where id=$_POST[id]";
+        $respuesta=mysqli_query($conexion,$modificar);
+        echo json_encode($respuesta);
         break;
     case 'borrar':
-        "DELETE FROM avisos where id='$_POST[id]'";
+        $borrar="DELETE FROM avisos where id='$_POST[id]'";
+        $respuesta=mysqli_query($conexion,$borrar);
+        echo json_encode($respuesta);
         break;
     default:
         break;
