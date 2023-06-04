@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="fullcalendar/main.css">
 
     <!-- Scripts js -->
+    
     <script type="text/javascript" src="js/code.jquery.com_jquery-3.7.0.min.js"></script>
     <script type="text/javascript" src="js/popper.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
@@ -23,13 +24,13 @@
     <title>Calendario</title>
 </head>
 
-<body>
-    <div class="containser-fluid">
+<body style="">
+    <div  class="containser-fluid"  style='margin:0 auto;'>
         <section class="conten-header">
             <h1>Calendario</h1>
         </section>
     </div>
-    <div id="Calendario1" style='border:1px solid #000; padding:2px'></div>
+    <div id="Calendario1" style='border:1px solid #000; padding:2px;display:flex;margin:0 auto;width:70vw;'></div>
 
     <!-- Formulario de eventos -->
     <div class="modal fade" id="FormularioEventos" tabindex="-1" role="dialog">
@@ -111,10 +112,20 @@
             </div>
         </div>
     </div>
+    <script src="fullcalendar/es.js"></script>
     <script>
         $('.clockpicker').clockpicker();
 
         let calendario1 = new FullCalendar.Calendar(document.getElementById('Calendario1'), {
+            height:800,
+            locale:'es',
+            headerToolbar:{
+                left:'prev,next today',
+                center:'title',
+                right:'dayGridMonth,timeGridWeek, timeGridDay'
+            },
+            // locales:'es',
+            editable:true,
             events: 'eventos.php?accion=listar',
             dateClick: function(info) {
 
@@ -131,7 +142,7 @@
                 } else {
                     let fechaHora = info.dateStr.split("T");
                     $('#fecha').val(fechaHora[0]);
-                    $('#fecha').val(fechaHora[1].substring(0, 5));
+                    $('#hora').val(fechaHora[1].substring(0, 5));
                 }
                 $("#FormularioEventos").modal('show');
             },
@@ -154,6 +165,38 @@
                 $('#colortexto').val(info.event.textColor);
 
                 $("#FormularioEventos").modal('show');
+            },
+            eventResize:function(info){
+                $('#id').val(info.event.id);
+                $('#descripcion').val(info.event.title);
+                $('#fecha').val(moment(info.event.start).format("YYYY-MM-DD"));
+                $('#hora').val(moment(info.event.start).format("HH:mm"));
+                $('#confirmada').val(info.event.extendedProps.confirmada);
+                $('#estado').val(info.event.extendedProps.estado);
+                $('#donde').val(info.event.extendedProps.donde);
+                $('#contacto').val(info.event.extendedProps.contacto);
+                $('#nombre').val(info.event.extendedProps.nombre);
+                $('#telefono').val(info.event.extendedProps.telefono);
+                $('#colorfondo').val(info.event.backgroundColor);
+                $('#colortexto').val(info.event.textColor);
+                let evento = recuperarDatosForm();
+                modificarEvento(evento);
+            },
+            eventDrop:function(info){
+                $('#id').val(info.event.id);
+                $('#descripcion').val(info.event.title);
+                $('#fecha').val(moment(info.event.start).format("YYYY-MM-DD"));
+                $('#hora').val(moment(info.event.start).format("HH:mm"));
+                $('#confirmada').val(info.event.extendedProps.confirmada);
+                $('#estado').val(info.event.extendedProps.estado);
+                $('#donde').val(info.event.extendedProps.donde);
+                $('#contacto').val(info.event.extendedProps.contacto);
+                $('#nombre').val(info.event.extendedProps.nombre);
+                $('#telefono').val(info.event.extendedProps.telefono);
+                $('#colorfondo').val(info.event.backgroundColor);
+                $('#colortexto').val(info.event.textColor);
+                let evento = recuperarDatosForm();
+                modificarEvento(evento);
             }
         });
         calendario1.render();
