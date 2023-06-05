@@ -27,6 +27,7 @@ switch($_GET['accion']){
         $agregar="INSERT INTO avisos (fecha,concepto, confirmada,estado,donde,contacto,nombre,telefono, colortexto, colorfondo) VALUES
         ('$_POST[fecha]','$_POST[concepto]','$_POST[confirmada]','$_POST[estado]','$_POST[donde]','$_POST[contacto]','$_POST[nombre]','$_POST[telefono]','$_POST[colortexto]','$_POST[colorfondo]')"; 
         $respuesta=mysqli_query($conexion,$agregar);
+     
         // $resultado=mysqli_fetch_all($respuesta, MYSQLI_ASSOC);
         echo json_encode($respuesta);
         break;
